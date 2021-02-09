@@ -199,7 +199,7 @@ typedef struct ESBox
 typedef struct AudioSampleEntryBox
 {
     u32 size; // 36
-    u32 type; // testing 'sowt' for 16-bit little-endian, twos-complement, if doesn't work TODO: try 0/none
+    u32 type; // testing 'sowt' for 16-bit little-endian, twos-complement
     char reserved[6];
     u16 data_reference_index; // = 1
     u16 version;              // testing version 0 that supports only uncompressed audio
@@ -210,7 +210,7 @@ typedef struct AudioSampleEntryBox
     u16 compression_ID;       // = 0
     u16 packet_size;          // = 0
     u32 sample_rate;          // says its a 32-bit unsigned fixed-point number
-    struct ESBox esBox;
+   // struct ESBox esBox;
 } AudioSampleEntryBox;
 
 typedef struct SampleSizeBox
@@ -560,7 +560,7 @@ typedef struct BaseMediaInformationBox
 {
     u32 size;           // 24
     u32 type;           // 'gmin'
-    u32 versionAndFlag; // version is 1 byte, flag 3 bytes. no  3byte variable exist, so this is the way I suppose
+    u32 versionAndFlag; // version is 1 byte, flag 3 bytes. Actually most of "version" fields in other boxes are in this way
     u16 graphicsMode;   // testing 0x0
     u16 opColor[3];     // testing 0
     u16 balance;        // 0

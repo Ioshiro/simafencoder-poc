@@ -42,6 +42,32 @@ typedef struct TRACK
     Sensor sensor[MAX_SENSORS];
 } Track;
 
+void WavHeader_new(WavHeader *header){
+    header->Chunk_ID[0] = 'R';
+    header->Chunk_ID[1] = 'I';
+    header->Chunk_ID[2] = 'F';
+    header->Chunk_ID[3] = 'F';
+
+    header->RIFF_TYPE_ID[0] = 'W';
+    header->RIFF_TYPE_ID[1] = 'A';
+    header->RIFF_TYPE_ID[2] = 'V';
+    header->RIFF_TYPE_ID[3] = 'E';
+
+    header->Chunk1_ID[0] = 'f';
+    header->Chunk1_ID[1] = 'm';
+    header->Chunk1_ID[2] = 't';
+    header->Chunk1_ID[3] = ' ';
+
+    header->Chunk1_data_Size = 16;
+    header->Format_Tag  = 1;
+
+    header->Chunk2_ID[0] = 'd';
+    header->Chunk2_ID[1] = 'a';
+    header->Chunk2_ID[2] = 't';
+    header->Chunk2_ID[3] = 'a';
+
+}
+
 int byteReverse(int num)
 {
     int swapped;

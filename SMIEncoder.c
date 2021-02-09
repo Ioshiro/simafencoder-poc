@@ -26,8 +26,6 @@ char *scanSensorName(int);
 
 int main()
 {
-    //variables
-    FILE *smi;
     Track tracks[MAX_TRACKS];
     for (int i = 0; i < MAX_TRACKS; i++)
     {
@@ -41,7 +39,7 @@ int main()
     int remainingSensors = totalSensors;
 
     //Create output file
-    smi = fopen("smi.mp4", "wb");
+    FILE *smi = fopen("smi.mp4", "wb");
     if (smi == NULL)
     {
         printf("Error opening output file\n");
