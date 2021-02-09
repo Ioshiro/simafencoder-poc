@@ -17,9 +17,7 @@
 #include "lib/boxes/minf.h"
 #include "lib/boxes/trak.h"
 
-
 void greetings();
-int scanFileFormat();
 int scanTotalTracks();
 int scanTotalSensors();
 char *scanTrackName(int);
@@ -31,13 +29,13 @@ int main()
     //variables
     FILE *smi;
     Track tracks[MAX_TRACKS];
-    for(int i = 0; i < MAX_TRACKS; i ++){
+    for (int i = 0; i < MAX_TRACKS; i++)
+    {
         tracks[i].sensorCount = 0;
     }
 
-    // Greet and scan file info (format and total audio&sensor track number)
+    // Greet and scan file info (total audio&sensor track number)
     greetings();
-    int typeTrack = scanFileFormat();
     int totalTracks = scanTotalTracks();
     int totalSensors = scanTotalSensors();
     int remainingSensors = totalSensors;
@@ -56,7 +54,8 @@ int main()
     {
         // Save tracks names
         strcpy(tracks[numtr].title, scanTrackName(numtr));
-        if(remainingSensors > 0 ){
+        if (remainingSensors > 0)
+        {
             tracks[numtr].sensorCount = scanSensorCount(remainingSensors, tracks[numtr].title);
             if (tracks[numtr].sensorCount > 0)
             {
@@ -78,11 +77,11 @@ int main()
     //Extract media from the audio and sensor files & Calculate duration/size
     MediaDataBox mdat;
     u32 duration = 0;
-    int sizeMDAT = MediaDataBox_new(&mdat, tracks, totalTracks, totalSensors, typeTrack, &duration);
+    int sizeMDAT = MediaDataBox_new(&mdat, tracks, totalTracks, totalSensors, &duration);
     //printf("sizemdat\t:%d\n", sizeMDAT);
     printf("duration\t:%u\n", duration);
     // Write media
-    MediaDataBox_write(mdat, smi, tracks, totalTracks, totalSensors, typeTrack);
+    MediaDataBox_write(mdat, smi, tracks, totalTracks, totalSensors);
     // Create  and write the movie box with all the tracks
     MovieBox moov;
     int sizeMOOV = MovieBox_new(&moov, tracks, duration, totalTracks, totalSensors);
@@ -97,32 +96,16 @@ void greetings()
     printf("This program will allow you to create a SMI file.\n");
 }
 
-int scanFileFormat()
-{
-    int typeTrack = 0;
-    printf("Select audio format (1 for .wav, 2 for .mp3, 0 exit):\n");
-    scanf("%d", &typeTrack);
-    while (typeTrack != 1 && typeTrack != 2)
-    {
-        if (typeTrack == 0)
-        {
-            exit(1);
-        }
-        printf("Unvalid type, select 0 to exit:\n");
-    }
-    return typeTrack;
-}
-
 int scanTotalTracks()
 {
     int totalTracks = 0;
-    printf("How many audio tracks there will be in your SMI file?\n");
+    printf("Insert the number of audio tracks:\n");
     fflush(stdin);
     scanf("%d", &totalTracks);
     while (totalTracks > MAX_TRACKS || totalTracks < 1)
     {
-        printf("Sorry, for this version the maximum number of audio tracks is %d\n", MAX_TRACKS);
-        printf("How many audio tracks there will be in your IMAF file?\n");
+        printf("Error: max track number: %d\n", MAX_TRACKS);
+        printf("Insert the number of audio tracks:\n");
         scanf("%d", &totalTracks);
     }
     return totalTracks;
@@ -131,13 +114,13 @@ int scanTotalTracks()
 int scanTotalSensors()
 {
     int totalSensors = 0;
-    printf("How many sensor tracks there will be in your SMI file?\n");
+    printf("Insert the number of sensor tracks:\n");
     fflush(stdin);
     scanf("%d", &totalSensors);
     while (totalSensors > MAX_SENSORS || totalSensors < 0)
     {
-        printf("Sorry, for this version the maximum number of sensor tracks is %d\n", MAX_TRACKS);
-        printf("How many sensor tracks there will be in your IMAF file?\n");
+        printf("Error: max sensor number: %d\n", MAX_SENSORS);
+        printf("Insert the number of sensor tracks:\n");
         scanf("%d", &totalSensors);
     }
     return totalSensors;

@@ -162,7 +162,7 @@ typedef struct TextSampleEntryBox
 } TextSampleEntryBox;
 
 typedef struct DecoderConfigDescriptorBox
-{                                            // size: 15
+{ // size: 15
     u8 tag;
     u8 length;
     u8 objectProfileInd;
@@ -172,14 +172,14 @@ typedef struct DecoderConfigDescriptorBox
 } DecoderConfigDescriptorBox;
 
 typedef struct SLConfigDescriptorBox
-{                                           // size: 3
+{ // size: 3
     u8 tag;
     u8 length;
     u8 predifined;
 } SLConfigDescriptorBox;
 
 typedef struct ESDescriptorBox
-{                                           // size: 5
+{ // size: 5
     u8 tag;
     u8 length;
     u16 ES_ID;
@@ -190,7 +190,7 @@ typedef struct ESDescriptorBox
 
 typedef struct ESBox
 {
-    u32 size;                              // 12
+    u32 size; // 12
     u32 type;
     u32 version;
     struct ESDescriptorBox esDescriptorBox;
@@ -198,18 +198,18 @@ typedef struct ESBox
 
 typedef struct AudioSampleEntryBox
 {
-    u32 size;                               // 36
-    u32 type;                               // testing 'sowt' for 16-bit little-endian, twos-complement, if doesn't work TODO: try 0/none
+    u32 size; // 36
+    u32 type; // testing 'sowt' for 16-bit little-endian, twos-complement, if doesn't work TODO: try 0/none
     char reserved[6];
-    u16 data_reference_index;               // = 1
-    u16 version;                            // testing version 0 that supports only uncompressed audio
-    u16 revision_level;                     // = 0
-    u32 vendor;                             // = 0
-    u16 num_channels;                       // 1 = mono , 2 = stereo
-    u16 sample_size;                        // sample size in bits (8 or 16)
-    u16 compression_ID;                     // = 0
-    u16 packet_size;                        // = 0
-    u32 sample_rate;                        // says its a 32-bit unsigned fixed-point number
+    u16 data_reference_index; // = 1
+    u16 version;              // testing version 0 that supports only uncompressed audio
+    u16 revision_level;       // = 0
+    u32 vendor;               // = 0
+    u16 num_channels;         // 1 = mono , 2 = stereo
+    u16 sample_size;          // sample size in bits (8 or 16)
+    u16 compression_ID;       // = 0
+    u16 packet_size;          // = 0
+    u32 sample_rate;          // says its a 32-bit unsigned fixed-point number
     struct ESBox esBox;
 } AudioSampleEntryBox;
 
@@ -602,8 +602,8 @@ typedef struct MetadataDatatypeDefinitionBox
 } MetadataDatatypeDefinitionBox;
 
 typedef struct MetadataKeyBox
-{             // This box can be an array of keys
-    u32 size; // 8 + sKeyd + sDtyp
+{               // This box can be an array of keys
+    u32 size;   // 8 + sKeyd + sDtyp
     u8 type[4]; // 'local_key_id' (FourCC 32-bit integer, can be 'snsr' for sensor? Or 'sns#'/'sn##' so 10 or 100 unique sensor ids can be created)
     MetadataKeyDeclarationBox metadataKeyDeclarationBox;
     MetadataDatatypeDefinitionBox metadataDatatypeDefinitionBox;
@@ -687,10 +687,10 @@ typedef struct SampleDescriptionBox
     u32 size;
     u32 type; //stsd
     u32 version;
-    u32 entry_count; // = 1 number of entries
-    struct TextSampleEntryBox textSampleEntryBox;                           // table for text hints
-    struct AudioSampleEntryBox audioSampleEntryBox;                         // table fot Audio
-    struct SampleDescriptionTableBox sampleDescriptionTableBox;             // table for Timed Metadata
+    u32 entry_count;                                            // = 1 number of entries
+    struct TextSampleEntryBox textSampleEntryBox;               // table for text hints
+    struct AudioSampleEntryBox audioSampleEntryBox;             // table fot Audio
+    struct SampleDescriptionTableBox sampleDescriptionTableBox; // table for Timed Metadata
 } SampleDescriptionBox;
 
 typedef struct SampleTableBox

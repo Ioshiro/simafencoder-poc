@@ -10,7 +10,7 @@
 #define TRAK_DEFAULT_SIZE 8
 #define TKHD_TYPE 'tkhd'
 #define TKHD_SIZE 92
-#define TKHD_AUDIO_VOLUME 0x1
+#define TKHD_AUDIO_VOLUME 256
 #define TREF_TYPE 'tref'
 #define CDSC_TYPE 'cdsc'
 
@@ -34,7 +34,7 @@ int TrackBox_new(TrackBox *trak, char fileName[], int numTrack, int durationTrac
     {
         sizeTRAK += TrackReferenceBox_new(&trak->trackReferenceBox, referenceTrack);
     }
-    sizeTRAK += MediaBox_new(&trak->mediaBox, fileName, chunkOffset, isAudio, sensorID);
+    sizeTRAK += MediaBox_new(&trak->mediaBox, fileName, durationTrack, chunkOffset, isAudio, sensorID);
     //trak . trackHeader
     //     . media . mediaHeader
     //              . handler
@@ -74,7 +74,8 @@ int TrackHeaderBox_new(TrackHeaderBox *tkhd, int numTrack, int durationTrack, in
     int sizeTKHD = TKHD_SIZE; //default size 92
     writeReverse(sizeTKHD, &tkhd->size);
     writeReverse(TKHD_TYPE, &tkhd->type);
-    writeReverse(0x00000006, &tkhd->version);
+    writeReverse(0x00000003, &tkhd->version);
+    //tkhd->version = 0;
     writeReverse(clock, &tkhd->creation_time);
     writeReverse(clock, &tkhd->modification_time);
     writeReverse((numTrack + 1), &tkhd->track_ID);

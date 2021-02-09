@@ -15,7 +15,7 @@
 #define HDLR_HANDLER_TYPE_AUDIO 'soun'
 #define HDLR_HANDLER_TYPE_META 'meta'
 
-int MediaBox_new(MediaBox *, char[], int, int, int);
+int MediaBox_new(MediaBox *, char[], int, int, int, int);
 int MediaBox_write(MediaBox, FILE *, int);
 int MediaHeaderBox_new(MediaHeaderBox *, int, int);
 int MediaHeaderBox_write(MediaHeaderBox, FILE *);
@@ -36,13 +36,13 @@ WavHeader readWavHeader(char[]);
 //                                                 . sampleToChunk
 //                                                 . chunkOffset
 
-int MediaBox_new(MediaBox *mdia, char fileName[], int chunkOffset, int isAudio, int sensorID)
+int MediaBox_new(MediaBox *mdia, char fileName[], int durationTrack, int chunkOffset, int isAudio, int sensorID)
 {
     int sizeMDIA = MDIA_DEFAULT_SIZE;
     writeReverse(MDIA_TYPE, &mdia->type);
     WavHeader wavHeader = readWavHeader(fileName);
-    u32 duration = wavHeader.Chunk2_data_Size / wavHeader.byte_rate;
-    sizeMDIA += MediaHeaderBox_new(&mdia->mediaHeaderBox, wavHeader.Sample_rate, wavHeader.Sample_rate * duration); // *** IF WAV ***
+    u32 duration = (u32)(((float)wavHeader.Sample_rate * durationTrack) / 1000.0);
+    sizeMDIA += MediaHeaderBox_new(&mdia->mediaHeaderBox, wavHeader.Sample_rate, duration);
     sizeMDIA += HandlerBox_new(&mdia->handlerBox, isAudio);
     sizeMDIA += MediaInformationBox_new(&mdia->mediaInformationBox, wavHeader, chunkOffset, isAudio, sensorID);
     writeReverse(sizeMDIA, &mdia->size);

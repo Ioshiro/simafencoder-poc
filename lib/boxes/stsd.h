@@ -7,8 +7,8 @@
 
 #define STSD_TYPE 'stsd'
 #define STSD_DEFAULT_SIZE 16
-#define WAVE_TYPE 'mp4a'
-#define WAVE_SIZE 36 //18
+#define WAVE_TYPE 'sowt'
+#define WAVE_SIZE 36 //18 36
 #define ESDS_TYPE 'esds'
 #define ESDS_SIZE 35
 #define MEBX_TYPE 'mebx'
@@ -72,12 +72,11 @@ int AudioSampleEntryBox_new(AudioSampleEntryBox *wave, u16 numChannels, u16 samp
 {
     int sizeWAVE = WAVE_SIZE;
     writeReverse(WAVE_TYPE, &wave->type);
-
-    // writeReverse16(numChannels, &wave->num_channels);
-    //  writeReverse16(sampleSize, &wave->sample_size);
+    writeReverse16(numChannels, &wave->num_channels);
+    writeReverse16(sampleSize, &wave->sample_size);
     //writeReverse(sampleRate, &wave->sample_rate);
-    wave->num_channels = 512;
-    wave->sample_size = 4096;
+    //wave->num_channels = 512;
+    //wave->sample_size = 4096;
     u32 swap = 44100 << 16;
     writeReverse(swap, &wave->sample_rate);
     wave->reserved[0] = 0;
@@ -86,13 +85,14 @@ int AudioSampleEntryBox_new(AudioSampleEntryBox *wave, u16 numChannels, u16 samp
     wave->reserved[3] = 0;
     wave->reserved[4] = 0;
     wave->reserved[5] = 0;
-    wave->data_reference_index = 256; // suspicious (maybe try writeReverse16(1, &wave->data_reference_index);?)
+    //wave->data_reference_index = 256; // suspicious (maybe try writeReverse16(1, &wave->data_reference_index);?)
+    writeReverse16(1, &wave->data_reference_index);
     wave->version = 0;
     wave->revision_level = 0;
     wave->vendor = 0;
     wave->compression_ID = 0;
     wave->packet_size = 0;
-    sizeWAVE += ElementaryStreamBox_new(&wave->esBox);
+    //sizeWAVE += ElementaryStreamBox_new(&wave->esBox);
     writeReverse(sizeWAVE, &wave->size);
     //printf("written wave\t:%d, channels %u, samplesize %u, samplerate %u\n", sizeWAVE, numChannels, sampleSize, sampleRate);
     return sizeWAVE;
@@ -101,8 +101,7 @@ int AudioSampleEntryBox_new(AudioSampleEntryBox *wave, u16 numChannels, u16 samp
 int AudioSampleEntryBox_write(AudioSampleEntryBox wave, FILE *smi)
 {
     int written = 0;
-    written += fwrite(&wave, sizeof(wave), 1, smi); // reserved may be written as 6 zero string terminated by \0, so check size = 36
-    //printf("wave written on file: %d  (36?)\n", written);
+    written += fwrite(&wave, sizeof(wave), 1, smi); // reserved may be written as 6 zero string terminated by \0, so check size = 34
     return written;
 }
 
@@ -126,7 +125,7 @@ int AudioSampleEntryBox_write2(AudioSampleEntryBox wave, FILE *smi)
     written += fwrite(&wave.sample_rate, sizeof(wave.sample_rate), 1, smi);
     u32 size;
     writeReverse(wave.size, &size);
-    ElementaryStreamBox_write(wave.esBox, smi);
+    //ElementaryStreamBox_write(wave.esBox, smi);
     //printf("\n\n wave size: %u \n\n", size);
     //printf("wave written on file: %d  (36?)\n", written);
     return written;

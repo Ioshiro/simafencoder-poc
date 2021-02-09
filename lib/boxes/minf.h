@@ -174,7 +174,7 @@ int DataEntryUrlBox_new(DataEntryUrlBox *url)
     int sizeURL = BOX_DEFAULT_SIZE + 4;
     writeReverse(URL_TYPE, &url->type);
     writeReverse(sizeURL, &url->size);
-    url->flags = 0;
+    writeReverse(1, &url->flags);
     //printf("written url\t:%d\n", sizeURL);
     return sizeURL;
 }

@@ -81,8 +81,10 @@ u32 fwriteReverse(int val, size_t size, size_t n, FILE *file)
     return swap;
 }
 
-void Tracks_new(Track *tracks[]){
-    for(int i = 0; i < MAX_TRACKS; i ++){
+void Tracks_new(Track *tracks[])
+{
+    for (int i = 0; i < MAX_TRACKS; i++)
+    {
         tracks[i]->sensorCount = 0;
     }
 }

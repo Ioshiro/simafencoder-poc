@@ -21,7 +21,7 @@ int SampleTableBox_new(SampleTableBox *, WavHeader, int, int, int);
 int SampleTableBox_write(SampleTableBox, FILE *, int);
 int TimeToSampleBox_new(TimeToSampleBox *, u32);
 int TimeToSampleBox_write(TimeToSampleBox, FILE *);
-int SampleSizeBox_new(SampleSizeBox *, u32);
+int SampleSizeBox_new(SampleSizeBox *, u32, u32);
 int SampleSizeBox_write(SampleSizeBox, FILE *);
 int SampleToChunkBox_new(SampleToChunkBox *, u32);
 int SampleToChunkBox_write(SampleToChunkBox, FILE *);
@@ -40,10 +40,10 @@ int SampleTableBox_new(SampleTableBox *stbl, WavHeader wavHeader, int chunkOffse
 {
     int sizeSTBL = BOX_DEFAULT_SIZE;
     writeReverse(STBL_TYPE, &stbl->type);
-    u32 numSamples = wavHeader.Chunk2_data_Size / (wavHeader.bits_per_sample / 8);
+    u32 numSamples = (wavHeader.Chunk2_data_Size / (wavHeader.bits_per_sample / 8)) / (u32)wavHeader.Num_Channels;
     u32 sizeSamples = wavHeader.bits_per_sample / 8;
     sizeSTBL += TimeToSampleBox_new(&stbl->timeToSampleBox, numSamples);
-    sizeSTBL += SampleSizeBox_new(&stbl->sampleSizeBox, sizeSamples);
+    sizeSTBL += SampleSizeBox_new(&stbl->sampleSizeBox, numSamples, sizeSamples * wavHeader.Num_Channels);
     sizeSTBL += SampleToChunkBox_new(&stbl->sampleToChunkBox, numSamples);
     sizeSTBL += ChunkOffsetBox_new(&stbl->chunkOffsetBox, (u32)chunkOffset);
     sizeSTBL += SampleDescriptionBox_new(&stbl->sampleDescriptionBox, wavHeader, isAudio, sensorID);
@@ -87,13 +87,14 @@ int TimeToSampleBox_write(TimeToSampleBox stts, FILE *smi)
     return written;
 }
 
-int SampleSizeBox_new(SampleSizeBox *stsz, u32 sizeSamples)
+int SampleSizeBox_new(SampleSizeBox *stsz, u32 numSamples, u32 sizeSamples)
 {
     int sizeSTSZ = STSZ_SIZE;
     writeReverse(STSZ_TYPE, &stsz->type);
     writeReverse(sizeSTSZ, &stsz->size);
     writeReverse(sizeSamples, &stsz->sample_size);
     stsz->version = 0;
+    //writeReverse(numSamples, &stsz->entry_count);
     stsz->entry_count = 0;
     //printf("written stsz\t:%d\n", sizeSTSZ);
     return sizeSTSZ;
